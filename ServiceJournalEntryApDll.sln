@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceJournalEntryApDll", "ServiceJournalEntryApDll\ServiceJournalEntryApDll.csproj", "{AFD1C7F9-9001-48A0-89C5-1789B67BC58E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AFD1C7F9-9001-48A0-89C5-1789B67BC58E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFD1C7F9-9001-48A0-89C5-1789B67BC58E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFD1C7F9-9001-48A0-89C5-1789B67BC58E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFD1C7F9-9001-48A0-89C5-1789B67BC58E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {78536BBA-1CA6-4D9E-9221-2074EF252870}
+	EndGlobalSection
+EndGlobal

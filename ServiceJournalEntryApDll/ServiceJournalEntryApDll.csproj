@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="ConverterLib_x64">
+      <HintPath>D:\Users\nkurdadze\Desktop\DLL\ConverterLib_x64.dll</HintPath>
+    </Reference>
+    <Reference Include="SAPBusinessOneSDK">
+      <HintPath>D:\Users\nkurdadze\Desktop\DLL\SAPBusinessOneSDK.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
