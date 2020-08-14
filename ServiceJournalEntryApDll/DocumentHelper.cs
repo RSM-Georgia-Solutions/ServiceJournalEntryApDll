@@ -422,7 +422,6 @@ namespace ServiceJournalEntryApDll
                     }
                     catch (Exception e)
                     {
-
                         results.Add(new Result { IsSuccessCode = false, StatusDescription = e.Message });
                         return results;
                     }
@@ -449,6 +448,7 @@ namespace ServiceJournalEntryApDll
                     }
                 }
             }
+            return results;
         }
 
     }
