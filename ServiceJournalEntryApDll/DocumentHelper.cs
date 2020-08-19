@@ -8,13 +8,20 @@ namespace ServiceJournalEntryApDll
 {
     public class DocumentHelper : IDocumentHelper
     {
-        public IEnumerable<Result> PostIncomeTaxFromCreditMemo(string invDocEnttry, Company Company)
+        private readonly Company _company;
+
+        public DocumentHelper(Company company)
+        {
+            _company = company;
+        }
+
+        public IEnumerable<Result> PostIncomeTaxFromCreditMemo(string invDocEnttry)
         {
             List<Result> results = new List<Result>();
-            Documents invoiceDi = (Documents)Company.GetBusinessObject(BoObjectTypes.oPurchaseCreditNotes);
+            Documents invoiceDi = (Documents)_company.GetBusinessObject(BoObjectTypes.oPurchaseCreditNotes);
             invoiceDi.GetByKey(int.Parse(invDocEnttry, CultureInfo.InvariantCulture));
             string bpCode = invoiceDi.CardCode;
-            Recordset recSet = (Recordset)Company.GetBusinessObject(BoObjectTypes.BoRecordset);
+            Recordset recSet = (Recordset)_company.GetBusinessObject(BoObjectTypes.BoRecordset);
             recSet.DoQuery(
                 $"SELECT U_IncomeTaxPayer, U_PensionPayer FROM OCRD WHERE OCRD.CardCode = N'{bpCode}'");
             bool isIncomeTaxPayer = recSet.Fields.Item("U_IncomeTaxPayer").Value.ToString() == "01";
@@ -32,7 +39,7 @@ namespace ServiceJournalEntryApDll
             }
 
             BusinessPartners bp =
-                (BusinessPartners)Company.GetBusinessObject(BoObjectTypes.oBusinessPartners);
+                (BusinessPartners)_company.GetBusinessObject(BoObjectTypes.oBusinessPartners);
             bp.GetByKey(invoiceDi.CardCode);
 
             var incomeTaxPayerPercent = double.Parse(bp.UserFields.Fields.Item("U_IncomeTaxPayerPercent").Value.ToString(),
@@ -75,7 +82,7 @@ namespace ServiceJournalEntryApDll
                 {
                     try
                     {
-                        string incomeTaxPayerTransId = DiManager.AddJournalEntry(Company, incomeTaxAccCr,
+                        string incomeTaxPayerTransId = DiManager.AddJournalEntry(_company, incomeTaxAccCr,
                             incomeTaxAccDr, incomeTaxControlAccCr, invoiceDi.CardCode, -incomeTaxAmount,
                             invoiceDi.Series, invoiceDi.Comments, invoiceDi.DocDate,
                             invoiceDi.BPL_IDAssignedToInvoice, invoiceDi.DocCurrency);
@@ -97,7 +104,7 @@ namespace ServiceJournalEntryApDll
                 {
                     try
                     {
-                        string incomeTaxPayerTransId = DiManager.AddJournalEntry(Company, incomeTaxAccCr,
+                        string incomeTaxPayerTransId = DiManager.AddJournalEntry(_company, incomeTaxAccCr,
                             incomeTaxAccDr, incomeTaxControlAccCr, invoiceDi.CardCode, incomeTaxAmount,
                             invoiceDi.Series, invoiceDi.Comments, invoiceDi.DocDate,
                             invoiceDi.BPL_IDAssignedToInvoice, invoiceDi.DocCurrency);
@@ -119,15 +126,15 @@ namespace ServiceJournalEntryApDll
             }
             return results;
         }
-        public IEnumerable<Result> PostIncomeTaxFromInvoice(string invDocEnttry, Company Company)
+        public IEnumerable<Result> PostIncomeTaxFromInvoice(string invDocEnttry)
         {
             List<Result> results = new List<Result>();
-            Documents invoiceDi = (Documents)Company.GetBusinessObject(BoObjectTypes.oPurchaseInvoices);
+            Documents invoiceDi = (Documents)_company.GetBusinessObject(BoObjectTypes.oPurchaseInvoices);
             invoiceDi.GetByKey(int.Parse(invDocEnttry, CultureInfo.InvariantCulture));
             string bpCode = invoiceDi.CardCode;
             bool isFc = invoiceDi.DocCurrency != "GEL";
 
-            Recordset recSet = (Recordset)Company.GetBusinessObject(BoObjectTypes.BoRecordset);
+            Recordset recSet = (Recordset)_company.GetBusinessObject(BoObjectTypes.BoRecordset);
 
             recSet.DoQuery(
                 $"SELECT U_IncomeTaxPayer, U_PensionPayer FROM OCRD WHERE OCRD.CardCode = N'{bpCode}'");
@@ -147,7 +154,7 @@ namespace ServiceJournalEntryApDll
             }
 
             SAPbobsCOM.BusinessPartners bp =
-                (SAPbobsCOM.BusinessPartners)Company.GetBusinessObject(BoObjectTypes.oBusinessPartners);
+                (SAPbobsCOM.BusinessPartners)_company.GetBusinessObject(BoObjectTypes.oBusinessPartners);
             bp.GetByKey(invoiceDi.CardCode);
 
             var incomeTaxPayerPercent = double.Parse(bp.UserFields.Fields.Item("U_IncomeTaxPayerPercent").Value.ToString(),
@@ -192,7 +199,7 @@ namespace ServiceJournalEntryApDll
                 {
                     try
                     {
-                        string incomeTaxPayerTransId = DiManager.AddJournalEntry(Company, incomeTaxAccCr,
+                        string incomeTaxPayerTransId = DiManager.AddJournalEntry(_company, incomeTaxAccCr,
                             incomeTaxAccDr, incomeTaxControlAccCr, invoiceDi.CardCode, incomeTaxAmount,
                             invoiceDi.Series, invoiceDi.Comments, invoiceDi.DocDate,
                             invoiceDi.BPL_IDAssignedToInvoice, invoiceDi.DocCurrency);
@@ -214,7 +221,7 @@ namespace ServiceJournalEntryApDll
                 {
                     try
                     {
-                        string incomeTaxPayerTransId = DiManager.AddJournalEntry(Company, incomeTaxAccCr,
+                        string incomeTaxPayerTransId = DiManager.AddJournalEntry(_company, incomeTaxAccCr,
                             incomeTaxAccDr, incomeTaxControlAccCr, invoiceDi.CardCode, -incomeTaxAmount,
                             invoiceDi.Series, invoiceDi.Comments, invoiceDi.DocDate,
                             invoiceDi.BPL_IDAssignedToInvoice, invoiceDi.DocCurrency);
@@ -236,14 +243,14 @@ namespace ServiceJournalEntryApDll
             }
             return results;
         }
-        public IEnumerable<Result> PostIncomeTaxFromOutgoing(string invDocEnttry, Company Company)
+        public IEnumerable<Result> PostIncomeTaxFromOutgoing(string invDocEnttry)
         {
             List<Result> results = new List<Result>();
-            Documents invoiceDi = (Documents)Company.GetBusinessObject(BoObjectTypes.oPurchaseInvoices);
+            Documents invoiceDi = (Documents)_company.GetBusinessObject(BoObjectTypes.oPurchaseInvoices);
             invoiceDi.GetByKey(int.Parse(invDocEnttry, CultureInfo.InvariantCulture));
             string bpCode = invoiceDi.CardCode;
 
-            Recordset recSet = (Recordset)Company.GetBusinessObject(BoObjectTypes.BoRecordset);
+            Recordset recSet = (Recordset)_company.GetBusinessObject(BoObjectTypes.BoRecordset);
 
 
             recSet.DoQuery(
@@ -264,7 +271,7 @@ namespace ServiceJournalEntryApDll
             }
 
             SAPbobsCOM.BusinessPartners bp =
-                (SAPbobsCOM.BusinessPartners)Company.GetBusinessObject(BoObjectTypes.oBusinessPartners);
+                (SAPbobsCOM.BusinessPartners)_company.GetBusinessObject(BoObjectTypes.oBusinessPartners);
             bp.GetByKey(invoiceDi.CardCode);
 
             var incomeTaxPayerPercent = double.Parse(bp.UserFields.Fields.Item("U_IncomeTaxPayerPercent").Value.ToString(),
@@ -309,7 +316,7 @@ namespace ServiceJournalEntryApDll
                 {
                     try
                     {
-                        string incomeTaxPayerTransId = DiManager.AddJournalEntry(Company, incomeTaxAccCr,
+                        string incomeTaxPayerTransId = DiManager.AddJournalEntry(_company, incomeTaxAccCr,
                             incomeTaxAccDr, incomeTaxControlAccCr, invoiceDi.CardCode, incomeTaxAmount,
                             invoiceDi.Series, invoiceDi.Comments, invoiceDi.DocDate,
                             invoiceDi.BPL_IDAssignedToInvoice, invoiceDi.DocCurrency);
@@ -331,7 +338,7 @@ namespace ServiceJournalEntryApDll
                 {
                     try
                     {
-                        string incomeTaxPayerTransId = DiManager.AddJournalEntry(Company, incomeTaxAccCr,
+                        string incomeTaxPayerTransId = DiManager.AddJournalEntry(_company, incomeTaxAccCr,
                             incomeTaxAccDr, incomeTaxControlAccCr, invoiceDi.CardCode, -incomeTaxAmount,
                             invoiceDi.Series, invoiceDi.Comments, invoiceDi.DocDate,
                             invoiceDi.BPL_IDAssignedToInvoice, invoiceDi.DocCurrency);
@@ -354,14 +361,14 @@ namespace ServiceJournalEntryApDll
             }
             return results;
         }
-        public IEnumerable<Result> PostPension(string invoiceDocentry, Company Company)
+        public IEnumerable<Result> PostPension(string invoiceDocentry)
         {
             List<Result> results = new List<Result>();
-            Documents invoiceDi = (Documents)Company.GetBusinessObject(BoObjectTypes.oPurchaseInvoices);
+            Documents invoiceDi = (Documents)_company.GetBusinessObject(BoObjectTypes.oPurchaseInvoices);
             invoiceDi.GetByKey(int.Parse(invoiceDocentry, CultureInfo.InvariantCulture));
             string bpCode = invoiceDi.CardCode;
 
-            Recordset recSet = (Recordset)Company.GetBusinessObject(BoObjectTypes.BoRecordset);
+            Recordset recSet = (Recordset)_company.GetBusinessObject(BoObjectTypes.BoRecordset);
 
 
             recSet.DoQuery(
@@ -376,7 +383,7 @@ namespace ServiceJournalEntryApDll
             string pensionControlAccCr = recSet.Fields.Item("U_PensionControlAccCr").Value.ToString();
 
             SAPbobsCOM.BusinessPartners bp =
-                (SAPbobsCOM.BusinessPartners)Company.GetBusinessObject(BoObjectTypes.oBusinessPartners);
+                (SAPbobsCOM.BusinessPartners)_company.GetBusinessObject(BoObjectTypes.oBusinessPartners);
             bp.GetByKey(invoiceDi.CardCode);
 
             var incomeTaxPayerPercent = double.Parse(bp.UserFields.Fields.Item("U_IncomeTaxPayerPercent").Value.ToString(),
@@ -403,7 +410,7 @@ namespace ServiceJournalEntryApDll
                     //invoiceDi.CancelStatus == CancelStatusEnum.csNo
                     try
                     {
-                        string incometaxpayertransidcomp = DiManager.AddJournalEntry(Company,
+                        string incometaxpayertransidcomp = DiManager.AddJournalEntry(_company,
                             pensionAccCr, pensionAccDr, pensionControlAccCr, pensionControlAccDr, pensionAmount,
                             invoiceDi.Series, invoiceDi.Comments, invoiceDi.DocDate,
                             invoiceDi.BPL_IDAssignedToInvoice, invoiceDi.DocCurrency);
@@ -423,7 +430,7 @@ namespace ServiceJournalEntryApDll
 
                     try
                     {
-                        string incometaxpayertransid = DiManager.AddJournalEntry(Company, pensionAccCr,
+                        string incometaxpayertransid = DiManager.AddJournalEntry(_company, pensionAccCr,
                             "", pensionControlAccCr, invoiceDi.CardCode, pensionAmount, invoiceDi.Series,
                             invoiceDi.Comments, invoiceDi.DocDate, invoiceDi.BPL_IDAssignedToInvoice,
                             invoiceDi.DocCurrency);

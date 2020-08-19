@@ -7,9 +7,10 @@ namespace ServiceJournalEntryApDll
 {
     public interface IDocumentHelper
     {
-        IEnumerable<Result> PostIncomeTaxFromCreditMemo(string invDocEnttry, Company Company);
-        IEnumerable<Result> PostIncomeTaxFromInvoice(string invDocEnttry, Company Company);
-        IEnumerable<Result> PostIncomeTaxFromOutgoing(string invDocEnttry, Company Company);
-        IEnumerable<Result> PostPension(string invoiceDocentry, Company Company);
+
+        IEnumerable<Result> PostIncomeTaxFromCreditMemo(string invDocEnttry);
+        IEnumerable<Result> PostIncomeTaxFromInvoice(string invDocEnttry);
+        IEnumerable<Result> PostIncomeTaxFromOutgoing(string invDocEnttry);
+        IEnumerable<Result> PostPension(string invoiceDocentry);
     }
 }

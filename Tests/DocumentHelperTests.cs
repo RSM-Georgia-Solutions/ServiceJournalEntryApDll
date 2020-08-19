@@ -13,7 +13,7 @@ namespace Tests
         private Company _company;
         public DocumentHelperTests()
         {
-            _documentHelper = new DocumentHelper();
+
             _company = new CompanyClass
             {
                 Server = "SRV-TAMARI",
@@ -32,24 +32,24 @@ namespace Tests
                                     $"UserName : {_company.UserName}," +
                                     $"CompanyDB : {_company.CompanyDB}");
             }
-
+            _documentHelper = new DocumentHelper(_company);
         }
 
         [TestMethod]
         public void PostIncomeTaxFromCreditMemo_TakesId_ReturnsNotEmptyResult()
         {
             _company.StartTransaction();
-           var res =  _documentHelper.PostIncomeTaxFromCreditMemo("2", _company);
-           var message = res.FirstOrDefault()?.StatusDescription;
-           Assert.AreNotEqual(0,res.Count());
-           _company.EndTransaction(BoWfTransOpt.wf_RollBack);
+            var res = _documentHelper.PostIncomeTaxFromCreditMemo("2");
+            var message = res.FirstOrDefault()?.StatusDescription;
+            Assert.AreNotEqual(0, res.Count());
+            _company.EndTransaction(BoWfTransOpt.wf_RollBack);
 
         }
         [TestMethod]
         public void PostIncomeTaxFromInvoice_TakesId_ReturnsNotEmptyResult()
         {
             _company.StartTransaction();
-            var res = _documentHelper.PostIncomeTaxFromInvoice("14097", _company);
+            var res = _documentHelper.PostIncomeTaxFromInvoice("14097");
             var message = res.FirstOrDefault()?.StatusDescription;
             Assert.AreNotEqual(0, res.Count());
             _company.EndTransaction(BoWfTransOpt.wf_RollBack);
@@ -59,7 +59,7 @@ namespace Tests
         public void PostIncomeTaxFromOutgoing_TakesId_ReturnsNotEmptyResult()
         {
             _company.StartTransaction();
-            var res = _documentHelper.PostIncomeTaxFromOutgoing("2", _company);
+            var res = _documentHelper.PostIncomeTaxFromOutgoing("2");
             var message = res.FirstOrDefault()?.StatusDescription;
             Assert.AreNotEqual(0, res.Count());
             _company.EndTransaction(BoWfTransOpt.wf_RollBack);
@@ -69,9 +69,9 @@ namespace Tests
         public void PostPension_TakesId_ReturnsNotEmptyResult()
         {
             _company.StartTransaction();
-            var res = _documentHelper.PostPension("2", _company);
+            var res = _documentHelper.PostPension("2");
             var message = res.FirstOrDefault()?.StatusDescription;
-           var aa = res.Count();
+            var aa = res.Count();
             Assert.AreNotEqual(0, aa);
             _company.EndTransaction(BoWfTransOpt.wf_RollBack);
 
